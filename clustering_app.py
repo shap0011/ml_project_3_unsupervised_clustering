@@ -354,7 +354,7 @@ st.write("Store the number of clusters and their respective silhouette scores in
 Variables3 = pd.DataFrame({'cluster': K, 'Silhouette_Score':ss})
 st.dataframe(Variables3, use_container_width=False)
 
-st.subheader("Silhouette Plot")
+st.subheader("Plot the Silhouette Plot")
 
 # Create a smaller figure
 fig, ax = plt.subplots(figsize=(4, 2.5))
