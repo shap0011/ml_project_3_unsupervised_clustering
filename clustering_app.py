@@ -15,6 +15,12 @@ header2_color = "#5f6caf"  # dark blue
 div_color = "#ffdfc4"  # extra light orange
 subheader_color = "#5f6caf"  # dark blue
 
+# Set page configuration
+st.set_page_config(
+    page_title="Loan Eligibility App",  # Your custom title
+    layout="wide"                   # Or "wide" if you want more space
+)
+
 # set the title of the Streamlit app
 st.markdown(f"<h1 style='color: {header1_color};'>Project 3. Clustering Algorithms</h1>", unsafe_allow_html=True)
 
@@ -64,8 +70,10 @@ df = pd.read_csv('data/mall_customers.csv')
 
 # # display the first five rows of the dataset in the app
 st.write('The dataset is loaded. The first five and last five records displayed below:')
-st.write(df.head())
-st.write(df.tail())
+df_head_5 = df.head()
+df_tail_5 = df.tail()
+st.dataframe(df_head_5, use_container_width=False)
+st.dataframe(df_tail_5, use_container_width=False)
 
 # create variables for rows and columns counts
 rows_count = df.shape[0]
@@ -87,7 +95,7 @@ describe = df.describe()
 
 # display subheader
 st.write("Descriptive statistics for all columns:")
-st.dataframe(describe)
+st.dataframe(describe, use_container_width=False)
 
 # calculate the pairwise correlation between numerical columns in the DataFrame
 # 'numeric_only=True' ensures that only numeric columns are considered for correlation
@@ -96,7 +104,7 @@ corr_matrix = df.corr(numeric_only=True)
 # display subheader
 st.write("Calculate the pairwise correlation between numerical columns in the DataFrame:")
 # display the correlation matrix
-st.dataframe(corr_matrix)
+st.dataframe(corr_matrix, use_container_width=False)
 
 # Calculate the pairwise Spearman rank correlation between numerical columns in the DataFrame
 # 'numeric_only=True' ensures only numeric columns are considered
@@ -106,7 +114,7 @@ corr_matrix_spearman = df.corr(numeric_only=True, method='spearman')
 # display subheader
 st.write("Calculate the pairwise Spearman rank correlation between numerical columns in the DataFrame:")
 # display the correlation matrix
-st.dataframe(corr_matrix_spearman)
+st.dataframe(corr_matrix_spearman, use_container_width=False)
 
 # let's plot a pairplot
 # add a title before the plot
@@ -116,7 +124,7 @@ st.markdown(f"<h2 style='text-align: center; color: {header1_color};'>Pairplot o
 pairplot_fig = sns.pairplot(df[['Age', 'Annual_Income', 'Spending_Score']])
 
 # display the plot in Streamlit
-st.pyplot(pairplot_fig)
+st.pyplot(pairplot_fig, use_container_width=False)
 
 st.markdown("""
             - As a mall owner you are interested in the customer spending score. 
@@ -145,7 +153,7 @@ cluster_centers = kmodel.cluster_centers_
 cluster_centers_df = pd.DataFrame(cluster_centers, columns=['Annual_Income_Center', 'Spending_Score_Center'])
 
 # Display the cluster centers
-st.dataframe(cluster_centers_df)
+st.dataframe(cluster_centers_df, use_container_width=False)
 
 # Check the cluster labels
 kmodel_labels = kmodel.labels_
@@ -162,6 +170,138 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # Put this data back in to the main dataframe corresponding to each observation
+st.write("Put this data back in to the main dataframe corresponding to each observation")
+# Assign the cluster labels predicted by the k-means model (kmodel) to a new column called 'Cluster' in the DataFrame (df)
 df['Cluster'] = kmodel.labels_
 
-st.write("Put this data back in to the main dataframe corresponding to each observation")
+# check the dataset
+df_head_5 = df.head()
+st.dataframe(df_head_5, use_container_width=False)
+
+st.write("How many observations belong to each cluster")
+# check how many observations belong to each cluster
+df_cluster = df['Cluster'].value_counts()
+st.dataframe(df_cluster, use_container_width=False)
+
+# Let' visualize these clusters
+st.subheader("Cluster Visualization")
+
+# Create a smaller figure
+fig, ax = plt.subplots(figsize=(4, 2.5))
+
+# Make dots smaller, reduce font sizes
+sns.scatterplot(
+    x='Annual_Income',
+    y='Spending_Score',
+    data=df,
+    hue='Cluster',
+    palette='colorblind',
+    ax=ax,
+    s=10  # <<< 's' is dot size (smaller number = smaller dots)
+)
+
+# Adjust labels and title font sizes
+ax.set_title("Customer Clusters", fontsize=8)
+ax.set_xlabel("Annual Income", fontsize=6)
+ax.set_ylabel("Spending Score", fontsize=6)
+
+ax.tick_params(axis='both', labelsize=5)
+
+# Shrink the legend font size
+ax.legend(title='Cluster', fontsize=5, title_fontsize=6)
+
+# Display the plot in Streamlit
+st.pyplot(fig, use_container_width=False)
+
+st.write("Visually we are able to see 5 clear clusters. Let's verify them using the Elbow and Silhouette Method")
+
+# add subheader
+st.markdown(f"<h3 style='color: {subheader_color};'>1. Elbow Method</h3>", unsafe_allow_html=True)
+st.markdown("""
+            - We will analyze clusters from 3 to 8 and calculate the WCSS scores. The WCSS scores can be used to plot the Elbow Plot.
+
+            - WCSS = Within Cluster Sum of Squares
+            """)
+
+# try using a for loop
+st.subheader("WCSS (Within-Cluster Sum of Squares) for Different k Values")
+
+# Initialize empty lists
+K = []
+WCSS = []
+
+# Range of k values
+k_range = range(3, 9)
+
+# Calculate WCSS for each k
+for k in k_range:
+    kmodel = KMeans(n_clusters=k, random_state=42).fit(df[['Annual_Income', 'Spending_Score']])
+    wcss_score = kmodel.inertia_
+    WCSS.append(wcss_score)
+    K.append(k)
+
+# Display results
+wss = pd.DataFrame({
+    'Number of Clusters (k)': K,
+    'WCSS': WCSS
+})
+
+st.dataframe(wss, use_container_width=False)
+
+# Plot WCSS vs k
+st.subheader("Elbow Plot")
+
+# Create a figure
+fig, ax = plt.subplots(figsize=(4, 2.5))
+
+
+ax.plot(wss['Number of Clusters (k)'], wss['WCSS'], marker='o', linestyle='-')
+
+# labels, title, and ticks
+ax.set_xlabel('No. of clusters', fontsize=8)
+ax.set_ylabel('WSS Score', fontsize=8)
+ax.set_title('Elbow Plot', fontsize=10)
+
+# axis numbers
+ax.tick_params(axis='both', labelsize=6)
+
+# Display the plot in Streamlit without stretching
+st.pyplot(fig, use_container_width=False)
+
+st.write("We get 5 clusters as a best value of k using the WSS method.")
+
+# add subheader
+st.markdown(f"<h3 style='color: {subheader_color};'>Silhouette Measure</h3>", unsafe_allow_html=True)
+
+st.write("Check the value of K using the Silhouette Measure")
+
+# import silhouette_score
+from sklearn.metrics import silhouette_score
+
+# same as above, calculate sihouetter score for each cluster using a for loop
+
+# try using a for loop
+k = range(3,9) # to loop from 3 to 8
+K = []         # to store the values of k
+ss = []        # to store respective silhouetter scores
+for i in k:
+    kmodel = KMeans(n_clusters=i,).fit(df[['Annual_Income','Spending_Score']], )
+    ypred = kmodel.labels_
+    sil_score = silhouette_score(df[['Annual_Income','Spending_Score']], ypred)
+    K.append(i)
+    ss.append(sil_score)
+    
+st.dataframe(ss, use_container_width=False)
+
+# Store the number of clusters and their respective silhouette scores in a dataframe
+wss['Silhouette_Score']=ss
+
+st.dataframe(wss, use_container_width=False)
+
+# add subheader
+st.markdown("""
+            ##### Silhouette score is between -1 to +1
+            """)
+
+st.write("closer to +1 means the clusters are better")
+
