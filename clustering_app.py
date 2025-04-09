@@ -118,12 +118,15 @@ st.dataframe(corr_matrix_spearman, use_container_width=False)
 
 # let's plot a pairplot
 # add a title before the plot
-st.markdown(f"<h2 style='text-align: center; color: {header1_color};'>Pairplot of Age, Annual Income, and Spending Score</h2>", unsafe_allow_html=True)
+st.markdown(f"<h2 style='color: {header1_color};'>Pairplot of Age, Annual Income, and Spending Score</h2>", unsafe_allow_html=True)
 
-# create the pairplot
+# Create the pairplot
 pairplot_fig = sns.pairplot(df[['Age', 'Annual_Income', 'Spending_Score']])
 
-# display the plot in Streamlit
+# ✨ Resize the pairplot to make it smaller
+pairplot_fig.fig.set_size_inches(4, 4)  # width, height in inches (adjust as needed)
+
+# Display the plot in Streamlit
 st.pyplot(pairplot_fig, use_container_width=False)
 
 st.markdown("""
@@ -242,8 +245,8 @@ for k in k_range:
 
 # Display results
 wss = pd.DataFrame({
-    'Number of Clusters (k)': K,
-    'WCSS': WCSS
+    'cluster': K,
+    'WSS_Score': WCSS
 })
 
 st.dataframe(wss, use_container_width=False)
@@ -255,7 +258,7 @@ st.subheader("Elbow Plot")
 fig, ax = plt.subplots(figsize=(4, 2.5))
 
 
-ax.plot(wss['Number of Clusters (k)'], wss['WCSS'], marker='o', linestyle='-')
+ax.plot(wss['cluster'], wss['WSS_Score'], marker='o', linestyle='-')
 
 # labels, title, and ticks
 ax.set_xlabel('No. of clusters', fontsize=8)
@@ -294,6 +297,7 @@ for i in k:
 st.dataframe(ss, use_container_width=False)
 
 # Store the number of clusters and their respective silhouette scores in a dataframe
+st.write("Store the number of clusters and their respective silhouette scores in a dataframe")
 wss['Silhouette_Score']=ss
 
 st.dataframe(wss, use_container_width=False)
@@ -305,3 +309,70 @@ st.markdown("""
 
 st.write("closer to +1 means the clusters are better")
 
+st.subheader("Silhouette Plot")
+
+# Create a figure
+fig, ax = plt.subplots(figsize=(4, 2.5))
+
+# Plot Silhouette Score vs number of clusters
+ax.plot(wss['cluster'], wss['Silhouette_Score'], marker='o', linestyle='-')
+
+# Labels, title, and ticks
+ax.set_xlabel('No. of clusters', fontsize=8)
+ax.set_ylabel('Silhouette Score', fontsize=8)
+ax.set_title('Silhouette Plot', fontsize=10)
+
+# Axis numbers
+ax.tick_params(axis='both', labelsize=6)
+
+# Display the plot in Streamlit without stretching
+st.pyplot(fig, use_container_width=False)
+
+st.write("Conclusion: Both Elbow and Silhouette methods gave the optimal value of k=5")
+
+# add subheader
+st.markdown(f"<h3 style='color: {subheader_color};'>Now use all the available features and use the k-means model.</h3>", unsafe_allow_html=True)
+
+st.markdown("""
+            - Remember, now you cannot visualise the clusters with more than 2 features.
+            - So, the optimal number of clusters can be only determined by Elbow and Silhouette methods.
+            """)
+
+# Train a model on 'Age','Annual_Income','Spending_Score' features
+k = range(3,9)
+K = []
+ss = []
+for i in k:
+    kmodel = KMeans(n_clusters=i).fit(df[['Age','Annual_Income','Spending_Score']], )
+    ypred = kmodel.labels_
+    sil_score = silhouette_score(df[['Age','Annual_Income','Spending_Score']], ypred)
+    K.append(i)
+    ss.append(sil_score)
+    
+# Store the number of clusters and their respective silhouette scores in a dataframe
+st.write("Store the number of clusters and their respective silhouette scores in a dataframe")
+Variables3 = pd.DataFrame({'cluster': K, 'Silhouette_Score':ss})
+st.dataframe(Variables3, use_container_width=False)
+
+st.subheader("Silhouette Plot")
+
+# Create a smaller figure
+fig, ax = plt.subplots(figsize=(4, 2.5))
+
+# Plot Silhouette Score vs number of clusters
+ax.plot(Variables3['cluster'], Variables3['Silhouette_Score'], marker='o', linestyle='-')
+
+# Smaller labels, title, and ticks
+ax.set_xlabel('No. of clusters', fontsize=8)
+ax.set_ylabel('Silhouette Score', fontsize=8)
+ax.set_title('Silhouette Plot', fontsize=10)
+
+ax.tick_params(axis='both', labelsize=6)
+
+# Display the plot in Streamlit without stretching
+st.pyplot(fig, use_container_width=False)
+
+# add subheader
+st.markdown("""
+            ##### Conclusion: With 3 features we now have the optimal value of k=6
+            """)
