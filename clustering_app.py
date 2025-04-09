@@ -1,3 +1,14 @@
+import os
+os.environ['STREAMLIT_LOG_LEVEL'] = 'debug'
+
+import logging
+
+# Configure logging manually again
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
 # Loading all the necessary packages
 import streamlit as st
 
@@ -5,6 +16,7 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+from app_module import functions as func
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -15,11 +27,8 @@ header2_color = "#5f6caf"  # dark blue
 div_color = "#ffdfc4"  # extra light orange
 subheader_color = "#5f6caf"  # dark blue
 
-# Set page configuration
-st.set_page_config(
-    page_title="Loan Eligibility App",  # Your custom title
-    layout="wide"                   # Or "wide" if you want more space
-)
+# Streamlit page config
+st.set_page_config(page_title="Loan Eligibility App", layout="wide")
 
 # set the title of the Streamlit app
 st.markdown(f"<h1 style='color: {header1_color};'>Project 3. Clustering Algorithms</h1>", unsafe_allow_html=True)
