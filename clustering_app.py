@@ -75,7 +75,7 @@ st.markdown(f"<h2 style='color: {header2_color};'>Data Analysis and Data Prep</h
 st.markdown(f"<h3 style='color: {subheader_color};'>Reading the data</h3>", unsafe_allow_html=True)
 
 # load the dataset from a CSV file located in the 'data' folder
-df = pd.read_csv('data/mall_customers.csv')
+df = func.load_data('data/mall_customers.csv')
 
 # # display the first five rows of the dataset in the app
 st.write('The dataset is loaded. The first five and last five records displayed below:')
@@ -84,20 +84,8 @@ df_tail_5 = df.tail()
 st.dataframe(df_head_5, use_container_width=False)
 st.dataframe(df_tail_5, use_container_width=False)
 
-# create variables for rows and columns counts
-rows_count = df.shape[0]
-columns_count = df.shape[1]
-# display dataset shape
-st.markdown(f"""
-    <div style='background-color: {div_color}; padding: 10px; border-radius: 8px; margin-bottom: 10px;'>
-            The dataset contains:
-            <ul>
-             <li><strong>Rows:</strong> { rows_count }</li>
-             <li><strong>Columns:</strong> { columns_count }</li>
-            </ul>
-    </div>
-    <hr>
-""", unsafe_allow_html=True)
+# Displays the number of rows and columns
+func.display_data_shape(df, div_color)
 
 # Check some quick stats of the data
 describe = df.describe()
@@ -126,17 +114,7 @@ st.write("Calculate the pairwise Spearman rank correlation between numerical col
 st.dataframe(corr_matrix_spearman, use_container_width=False)
 
 # let's plot a pairplot
-# add a title before the plot
-st.markdown(f"<h2 style='color: {header1_color};'>Pairplot of Age, Annual Income, and Spending Score</h2>", unsafe_allow_html=True)
-
-# Create the pairplot
-pairplot_fig = sns.pairplot(df[['Age', 'Annual_Income', 'Spending_Score']])
-
-# ✨ Resize the pairplot to make it smaller
-pairplot_fig.fig.set_size_inches(4, 4)  # width, height in inches (adjust as needed)
-
-# Display the plot in Streamlit
-st.pyplot(pairplot_fig, use_container_width=False)
+func.plot_pairplot(df, ['Age', 'Annual_Income', 'Spending_Score'], header1_color)
 
 st.markdown("""
             - As a mall owner you are interested in the customer spending score. 
@@ -195,35 +173,8 @@ st.write("How many observations belong to each cluster")
 df_cluster = df['Cluster'].value_counts()
 st.dataframe(df_cluster, use_container_width=False)
 
-# Let' visualize these clusters
-st.subheader("Cluster Visualization")
-
-# Create a smaller figure
-fig, ax = plt.subplots(figsize=(4, 2.5))
-
-# Make dots smaller, reduce font sizes
-sns.scatterplot(
-    x='Annual_Income',
-    y='Spending_Score',
-    data=df,
-    hue='Cluster',
-    palette='colorblind',
-    ax=ax,
-    s=10  # <<< 's' is dot size (smaller number = smaller dots)
-)
-
-# Adjust labels and title font sizes
-ax.set_title("Customer Clusters", fontsize=8)
-ax.set_xlabel("Annual Income", fontsize=6)
-ax.set_ylabel("Spending Score", fontsize=6)
-
-ax.tick_params(axis='both', labelsize=5)
-
-# Shrink the legend font size
-ax.legend(title='Cluster', fontsize=5, title_fontsize=6)
-
-# Display the plot in Streamlit
-st.pyplot(fig, use_container_width=False)
+# Cluster visualization
+func.plot_clusters(df, 'Annual_Income', 'Spending_Score')
 
 st.write("Visually we are able to see 5 clear clusters. Let's verify them using the Elbow and Silhouette Method")
 
@@ -235,50 +186,11 @@ st.markdown("""
             - WCSS = Within Cluster Sum of Squares
             """)
 
-# try using a for loop
-st.subheader("WCSS (Within-Cluster Sum of Squares) for Different k Values")
+# Calculate WCSS and display results
+wss = func.calculate_wcss_and_display(df, ['Annual_Income', 'Spending_Score'], range(3, 9))
 
-# Initialize empty lists
-K = []
-WCSS = []
-
-# Range of k values
-k_range = range(3, 9)
-
-# Calculate WCSS for each k
-for k in k_range:
-    kmodel = KMeans(n_clusters=k, random_state=42).fit(df[['Annual_Income', 'Spending_Score']])
-    wcss_score = kmodel.inertia_
-    WCSS.append(wcss_score)
-    K.append(k)
-
-# Display results
-wss = pd.DataFrame({
-    'cluster': K,
-    'WSS_Score': WCSS
-})
-
-st.dataframe(wss, use_container_width=False)
-
-# Plot WCSS vs k
-st.subheader("Elbow Plot")
-
-# Create a figure
-fig, ax = plt.subplots(figsize=(4, 2.5))
-
-
-ax.plot(wss['cluster'], wss['WSS_Score'], marker='o', linestyle='-')
-
-# labels, title, and ticks
-ax.set_xlabel('No. of clusters', fontsize=8)
-ax.set_ylabel('WSS Score', fontsize=8)
-ax.set_title('Elbow Plot', fontsize=10)
-
-# axis numbers
-ax.tick_params(axis='both', labelsize=6)
-
-# Display the plot in Streamlit without stretching
-st.pyplot(fig, use_container_width=False)
+# plot
+func.plot_elbow(wss)
 
 st.write("We get 5 clusters as a best value of k using the WSS method.")
 
@@ -290,25 +202,16 @@ st.write("Check the value of K using the Silhouette Measure")
 # import silhouette_score
 from sklearn.metrics import silhouette_score
 
-# same as above, calculate sihouetter score for each cluster using a for loop
+# range of k values
+k_range = range(3, 9)
 
-# try using a for loop
-k = range(3,9) # to loop from 3 to 8
-K = []         # to store the values of k
-ss = []        # to store respective silhouetter scores
-for i in k:
-    kmodel = KMeans(n_clusters=i,).fit(df[['Annual_Income','Spending_Score']], )
-    ypred = kmodel.labels_
-    sil_score = silhouette_score(df[['Annual_Income','Spending_Score']], ypred)
-    K.append(i)
-    ss.append(sil_score)
-    
-st.dataframe(ss, use_container_width=False)
+# calculate silhouette scores using your module function
+ss = func.silhouette_method(df, ['Annual_Income', 'Spending_Score'], k_range)
 
-# Store the number of clusters and their respective silhouette scores in a dataframe
-st.write("Store the number of clusters and their respective silhouette scores in a dataframe")
-wss['Silhouette_Score']=ss
+# add the silhouette scores to the existing WSS DataFrame
+wss['Silhouette_Score'] = ss
 
+# display the updated DataFrame
 st.dataframe(wss, use_container_width=False)
 
 # add subheader
@@ -318,24 +221,8 @@ st.markdown("""
 
 st.write("closer to +1 means the clusters are better")
 
-st.subheader("Silhouette Plot")
-
-# Create a figure
-fig, ax = plt.subplots(figsize=(4, 2.5))
-
-# Plot Silhouette Score vs number of clusters
-ax.plot(wss['cluster'], wss['Silhouette_Score'], marker='o', linestyle='-')
-
-# Labels, title, and ticks
-ax.set_xlabel('No. of clusters', fontsize=8)
-ax.set_ylabel('Silhouette Score', fontsize=8)
-ax.set_title('Silhouette Plot', fontsize=10)
-
-# Axis numbers
-ax.tick_params(axis='both', labelsize=6)
-
-# Display the plot in Streamlit without stretching
-st.pyplot(fig, use_container_width=False)
+# plot the silhouette scores
+func.plot_silhouette(wss, 'cluster', 'Silhouette_Score')
 
 st.write("Conclusion: Both Elbow and Silhouette methods gave the optimal value of k=5")
 
@@ -347,39 +234,16 @@ st.markdown("""
             - So, the optimal number of clusters can be only determined by Elbow and Silhouette methods.
             """)
 
-# Train a model on 'Age','Annual_Income','Spending_Score' features
-k = range(3,9)
-K = []
-ss = []
-for i in k:
-    kmodel = KMeans(n_clusters=i).fit(df[['Age','Annual_Income','Spending_Score']], )
-    ypred = kmodel.labels_
-    sil_score = silhouette_score(df[['Age','Annual_Income','Spending_Score']], ypred)
-    K.append(i)
-    ss.append(sil_score)
+# calculate silhouette scores
+Variables3 = func.calculate_silhouette_for_features(df, ['Age', 'Annual_Income', 'Spending_Score'], range(3, 9))
     
 # Store the number of clusters and their respective silhouette scores in a dataframe
 st.write("Store the number of clusters and their respective silhouette scores in a dataframe")
-Variables3 = pd.DataFrame({'cluster': K, 'Silhouette_Score':ss})
+# Variables3 = pd.DataFrame({'cluster': K, 'Silhouette_Score':ss})
 st.dataframe(Variables3, use_container_width=False)
 
-st.subheader("Plot the Silhouette Plot")
-
-# Create a smaller figure
-fig, ax = plt.subplots(figsize=(4, 2.5))
-
-# Plot Silhouette Score vs number of clusters
-ax.plot(Variables3['cluster'], Variables3['Silhouette_Score'], marker='o', linestyle='-')
-
-# Smaller labels, title, and ticks
-ax.set_xlabel('No. of clusters', fontsize=8)
-ax.set_ylabel('Silhouette Score', fontsize=8)
-ax.set_title('Silhouette Plot', fontsize=10)
-
-ax.tick_params(axis='both', labelsize=6)
-
-# Display the plot in Streamlit without stretching
-st.pyplot(fig, use_container_width=False)
+# Call the new function to plot
+func.plot_silhouette_for_features(Variables3)
 
 # add subheader
 st.markdown("""
