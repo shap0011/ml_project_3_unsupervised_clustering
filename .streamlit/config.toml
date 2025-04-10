@@ -4,3 +4,7 @@ backgroundColor="#edf7fa" # light blue
 secondaryBackgroundColor="#ff8364" # dark orange 
 textColor="#000f" # black
 font="sans serif"
+baseFontSize = 18  
+
+[logger]
+level = "info
