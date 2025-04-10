@@ -1,25 +1,130 @@
-# 📦 Streamlit App Starter Kit 
-```
-⬆️ (Replace above with your app's name)
-```
+# Mall Customer Segmentation - Clustering Algorithms Project 
 
-Description of the app ...
+This project builds an **Unsupervised Machine Learning model** to segment customers of a mall based on their spending habits, income, and age.
 
-## Demo App
+The project is deployed as an interactive **Streamlit web app** where you can explore the data, visualize clusters, and validate the best number of clusters using **Elbow** and **Silhouette** methods.
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://app-starter-kit.streamlit.app/)
+## Technologies Used
+
+- [Streamlit](https://streamlit.io/) - For building the interactive web app
+- [Scikit-learn](https://scikit-learn.org/) - For machine learning models
+- [Pandas](https://pandas.pydata.org/) - For data manipulation
+- [NumPy](https://numpy.org/) - For numerical computing
+- [Matplotlib](https://matplotlib.org/) - For plotting the decision tree
+- [Logging](https://docs.python.org/3/library/logging.html) - For backend log management
+- [Seaborn](https://seaborn.pydata.org/) - For creating the distribution plot
+
+## Project Structure
+
+- **.streamlit/**
+  - `config.toml` — Theme setting
+- `clustering_app.py` — Main Streamlit app
+- **app_module/**
+  - `__init__.py`
+  - `functions.py` — All helper functions
+- **data/**
+  - `mall_customers.csv` — Raw dataset
+- `requirements.txt` — List of Python dependencies
+- `README.md` — Project documentation
+
+## Dataset
+The dataset contains the following features:
+
+| Feature	      | Description                                  |
+|-----------------|----------------------------------------------|
+| CustomerID	  | Unique ID assigned to each customer          |
+| Gender	      | Gender of the customer                       |
+| Age	          | Age of the customer                          |
+| Income	      | Annual Income (in $1000)                     |
+| Spending_Score  | Spending score assigned by the mall (1-100)  |
+
+## App Features
+- **Data Loading & Display:**
+
+    - Load mall customer dataset
+
+    - Display first and last five records
+
+    - Show dataset shape, summary statistics, and correlations
+
+- **Data Visualization:**
+
+    - Pairplot of features like Age, Annual Income, and Spending Score
+
+    - Correlation matrix and Spearman correlation matrix
+
+- **Clustering:**
+
+    - Apply **K-Means Clustering** on:
+
+        - 2 features: Annual Income and Spending Score
+
+        - 3 features: Age, Annual Income, and Spending Score
+
+    - Visualize customer clusters
+
+- **Cluster Validation:**
+
+    - **Elbow Method:** Determine optimal number of clusters (k) based on WCSS (Within Cluster Sum of Squares)
+
+    - **Silhouette Analysis:** Confirm the best value of k based on silhouette scores
+
+    - Visualize WSS and Silhouette plots
+
+- **Error Handling:**
+
+    - Gracefully handle errors like missing data files or model failures
+
+    - Log all errors and important information for debugging
+
+## Key Learning Outcomes
+
+- Practical application of **unsupervised learning** (clustering) with real-world data.
+
+- Understanding how to **validate clustering models** using Elbow and Silhouette methods.
+
+- Hands-on experience with **interactive data visualization** in Streamlit.
+
+- Implementing **error handling** and **logging** in a professional-grade app.
+
+## How to Run the App Locally
+
+1. **Clone the repository**
+
+```bash```
+git clone https://github.com/shap0011/ml_project_3_unsupervised_clustering.git
+cd ml_project_3_unsupervised_clustering
+
+2. **Install the required packages**
+
+```bash```
+    pip install -r requirements.txt
+
+3. **Run the App**
+
+```bash```
+streamlit run clustering_app.py
+
+4. Open the URL shown (usually http://localhost:8501) to view the app in your browser!
+
+## Deployment
+The app is also deployed on Streamlit Cloud.
+Click [![Here](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://x8978qbprdndxg9bcq9wqk.streamlit.app/) to view the live app.
+
+## Author
+Name: Olga Durham
+
+LinkedIn: [\[Olga Durham LinkedIn Link\]](https://www.linkedin.com/in/olga-durham/)
+
+GitHub: [\[Olga Durham GitHub Link\]](https://github.com/shap0011)
+
 
 ## GitHub Codespaces
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/streamlit/app-starter-kit?quickstart=1)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://miniature-space-yodel-r679jjj44jw3pq44.github.dev/)
 
-## Section Heading
+## License
 
-This is filler text, please replace this with text for this section.
-
-## Further Reading
-
-This is filler text, please replace this with a explanatory text about further relevant resources for this repo
-- Resource 1
-- Resource 2
-- Resource 3
+This project is licensed under the MIT License.  
+Feel free to use, modify, and share it.  
+See the [LICENSE](./LICENSE) file for details.
