@@ -37,7 +37,7 @@ The dataset contains the following features:
 | Spending_Score  | Spending score assigned by the mall (1-100)  |
 
 ## App Features
-- **Data Loading & Display:**
+- **Data Loading:**
 
     - Load mall customer dataset
 
@@ -53,8 +53,6 @@ The dataset contains the following features:
     - **Elbow Method:** Determine optimal number of clusters (k) based on WCSS (Within Cluster Sum of Squares)
 
     - **Silhouette Analysis:** Confirm the best value of k based on silhouette scores
-
-    - Visualize WSS and Silhouette plots
 
 - **Error Handling:**
 
