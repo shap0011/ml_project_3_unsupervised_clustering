@@ -68,6 +68,8 @@ try:
     # Train KMeans
     kmeans = KMeans(n_clusters=3, random_state=42)
     kmeans.fit(X_scaled)
+    
+     #-------- user input form ----------------------------- 
 
     st.markdown("---")
     st.subheader("🐦 Predict Your Cluster")
@@ -96,6 +98,8 @@ try:
 
             # Predict cluster
             cluster_label = kmeans.predict(user_input_scaled)[0]
+            
+             #-------- success message & result ----------------------------- 
 
             # Display result
             st.success(f"✨ You belong to **Cluster {cluster_label}**!")
