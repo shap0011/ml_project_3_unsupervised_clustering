@@ -1,8 +1,8 @@
-# Mall Customer Segmentation - Clustering Algorithms Project 
+# Mall Customer Segmentation - Customer Clustering App 
 
 This project builds an **Unsupervised Machine Learning model** to segment customers of a mall based on their spending habits, income, and age.
 
-The project is deployed as an interactive **Streamlit web app** where you can explore the data, visualize clusters, and validate the best number of clusters using **Elbow** and **Silhouette** methods.
+The project is deployed as an interactive **Streamlit web app** where you can explore the data, and validate the best number of clusters.
 
 ## Technologies Used
 
@@ -41,25 +41,12 @@ The dataset contains the following features:
 
     - Load mall customer dataset
 
-    - Display first and last five records
-
-    - Show dataset shape, summary statistics, and correlations
-
-- **Data Visualization:**
-
-    - Pairplot of features like Age, Annual Income, and Spending Score
-
-    - Correlation matrix and Spearman correlation matrix
-
 - **Clustering:**
 
     - Apply **K-Means Clustering** on:
 
-        - 2 features: Annual Income and Spending Score
-
         - 3 features: Age, Annual Income, and Spending Score
 
-    - Visualize customer clusters
 
 - **Cluster Validation:**
 
