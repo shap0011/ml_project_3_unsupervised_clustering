@@ -107,7 +107,7 @@ streamlit run clustering_app.py
 
 ## Deployment
 The app is also deployed on Streamlit Cloud.
-Click [![Here](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://x8978qbprdndxg9bcq9wqk.streamlit.app/) to view the live app.
+Click [![Here](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://customer-clustering-app-shap0011.streamlit.app/) to view the live app.
 
 ## Author
 Name: Olga Durham
