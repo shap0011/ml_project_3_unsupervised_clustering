@@ -36,10 +36,45 @@ try:
     
     #-------- the app overview -----------------------------
     
-    
+    st.markdown("""
+    ### Overview
+    This **Customer Clustering App** helps you predict which **customer cluster group** you belong to based on your personal information.
+    By using **K-Means Clustering**, the app groups customers into different segments based on key features like **Age**, **Annual Income**, and **Spending Score**.
+
+    **Purpose of this app**:
+
+    - Understand customer behavior patterns
+
+    - Group customers with similar characteristics
+
+    - Support marketing, targeting, and customer analysis activities
+
+    Clusters are based on a pre-trained model using real mall customer data.
+    """)
     
     #-------- user instructions -------------------------------
 
+    st.markdown("""
+    ### How to Use This App
+
+    1. **Enter Your Details**
+    Fill out the form with the following information:
+
+        - **Age** (between 0 and 100)
+
+        - **Annual Income** (in thousands of dollars)
+
+        - **Spending Score** (on a scale of 1 to 100)
+
+    2. **Submit**
+    Click the "**Predict Cluster**" button to find out which customer group you belong to.
+
+    3. **View Your Result**
+    The app will immediately display your **Cluster Number** based on the trained model.
+
+    4. **Interpret Your Cluster**
+    Different clusters represent different customer profiles, which businesses can use for targeted strategies.
+    """)
     
     #-------- the dataset loading -----------------------------
 
