@@ -7,12 +7,10 @@ The project is deployed as an interactive **Streamlit web app** where you can ex
 ## Technologies Used
 
 - [Streamlit](https://streamlit.io/) - For building the interactive web app
-- [Scikit-learn](https://scikit-learn.org/) - For machine learning models
 - [Pandas](https://pandas.pydata.org/) - For data manipulation
-- [NumPy](https://numpy.org/) - For numerical computing
-- [Matplotlib](https://matplotlib.org/) - For plotting the decision tree
 - [Logging](https://docs.python.org/3/library/logging.html) - For backend log management
-- [Seaborn](https://seaborn.pydata.org/) - For creating the distribution plot
+- [Os](https://docs.python.org/3/library/os.html) - For setting STREAMLIT_LOG_LEVEL
+- [Warnings](https://docs.python.org/3/library/warnings.html) - To ignore warnings
 
 ## Project Structure
 
